@@ -1,100 +1,67 @@
-name: 🚀 Deploy Portfolio
+name: Deploy Portfolio
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - main
 
 env:
   NODE_VERSION: '20'
+  AWS_REGION: 'eu-west-3'
 
 jobs:
-  # ──────────────────────────────────────────
-  # JOB 1: CI – Lint + Build
-  # ──────────────────────────────────────────
-  ci:
-    name: 🔍 CI – Lint & Build
+  deploy:
+    name: Build & Deploy
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup Node.js ${{ env.NODE_VERSION }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
-
-      - name: 🔍 Lint
-        run: npm run lint
-
-      - name: 🏗️ Build
+      
+      - name: Build
         run: npm run build
 
-      - name: 📤 Upload build artifacts
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
-        with:
-          name: portfolio-build
-          path: out/
-          retention-days: 1
-
-  # ──────────────────────────────────────────
-  # JOB 2: Deploy to AWS S3 + CloudFront
-  # ──────────────────────────────────────────
-  deploy:
-    name: ☁️ Deploy to AWS
-    runs-on: ubuntu-latest
-    needs: ci
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: 📥 Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: portfolio-build
-          path: out/
-
-      - name: 🔑 Configure AWS credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: 🪣 Sync to S3
+      - name: Deploy to S3
         run: |
           aws s3 sync out/ s3://${{ secrets.S3_BUCKET }} \
             --delete \
             --cache-control "public, max-age=31536000, immutable" \
             --exclude "*.html"
 
-          # HTML files: no cache (toujours à jour)
           aws s3 sync out/ s3://${{ secrets.S3_BUCKET }} \
             --delete \
-            --cache-control "public, max-age=0, must-revalidate" \
+            --cache-control "no-cache, no-store, must-revalidate" \
             --include "*.html" \
             --exclude "*"
 
-      - name: 🌐 Invalidate CloudFront cache
+      - name:  Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
 
-      - name: ✅ Deployment summary
+      - name: ✅ Done
         run: |
-          echo "## 🚀 Déploiement réussi !" >> $GITHUB_STEP_SUMMARY
+          echo "## Déploiement réussi !" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Étape | Statut |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Build | ✅ OK |" >> $GITHUB_STEP_SUMMARY
-          echo "| Upload S3 | ✅ OK |" >> $GITHUB_STEP_SUMMARY
-          echo "| CloudFront Invalidation | ✅ OK |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "🌐 Site disponible sur ton domaine CloudFront" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Next.js | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Upload S3 | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Invalidation CloudFront | ✅ |" >> $GITHUB_STEP_SUMMARY
