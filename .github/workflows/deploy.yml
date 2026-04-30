@@ -11,7 +11,7 @@ env:
 
 jobs:
   deploy:
-    name: Build & Deploy
+    name: Build and Deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Build
         run: npm run build
 
@@ -39,29 +39,17 @@ jobs:
 
       - name: Deploy to S3
         run: |
-          aws s3 sync out/ s3://${{ secrets.S3_BUCKET }} \
-            --delete \
-            --cache-control "public, max-age=31536000, immutable" \
-            --exclude "*.html"
+          aws s3 sync out/ s3://${{ secrets.S3_BUCKET }} --delete --cache-control "public, max-age=31536000, immutable" --exclude "*.html"
+          aws s3 sync out/ s3://${{ secrets.S3_BUCKET }} --cache-control "no-cache, no-store, must-revalidate" --include "*.html" --exclude "*" --content-type "text/html"
 
-          aws s3 sync out/ s3://${{ secrets.S3_BUCKET }} \
-            --cache-control "no-cache, no-store, must-revalidate" \
-            --include "*.html" \
-            --exclude "*"
-            --content-type "text/html"
+      - name: Invalidate CloudFront cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
 
-      - name:  Invalidate CloudFront cache
+      - name: Done
         run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-            --paths "/*"
-
-      - name: ✅ Done
-        run: |
-          echo "## Déploiement réussi !" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Étape | Statut |" >> $GITHUB_STEP_SUMMARY
+          echo "Deploiement reussi !" >> $GITHUB_STEP_SUMMARY
+          echo "| Etape | Statut |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Build Next.js | ✅ |" >> $GITHUB_STEP_SUMMARY
-          echo "| Upload S3 | ✅ |" >> $GITHUB_STEP_SUMMARY
-          echo "| Invalidation CloudFront | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Next.js | OK |" >> $GITHUB_STEP_SUMMARY
+          echo "| Upload S3 | OK |" >> $GITHUB_STEP_SUMMARY
+          echo "| Invalidation CloudFront | OK |" >> $GITHUB_STEP_SUMMARY
