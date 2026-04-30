@@ -45,10 +45,10 @@ jobs:
             --exclude "*.html"
 
           aws s3 sync out/ s3://${{ secrets.S3_BUCKET }} \
-            --delete \
             --cache-control "no-cache, no-store, must-revalidate" \
             --include "*.html" \
             --exclude "*"
+            --content-type "text/html"
 
       - name:  Invalidate CloudFront cache
         run: |
