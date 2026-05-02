@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import emailjs from '@emailjs/browser'
 import { Mail, Phone, MapPin, Github, Linkedin, Send, CheckCircle, Briefcase, Globe, Clock } from 'lucide-react'
 import { profile } from '@/data/portfolio'
 
@@ -11,9 +12,26 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(form.subject || 'Contact depuis le portfolio')}&body=${encodeURIComponent(`Nom: ${form.name}\nEmail: ${form.email}\n\n${form.message}`)}`
-    window.location.href = mailto
-    setTimeout(() => { setLoading(false); setSent(true) }, 800)
+
+    emailjs.send(
+      'service_ses477v',
+      'template_h6wdepx',
+      {
+        from_name: form.name,
+        from_email: form.email,
+        subject: form.subject,
+        message: form.message,
+      },
+      'XEba1Gz0VE398dh7K'
+    )
+    .then(() => {
+      setLoading(false)
+      setSent(true)
+    })
+    .catch(() => {
+      setLoading(false)
+      alert('Erreur lors de l\'envoi. Veuillez réessayer.')
+    })
   }
 
   const inp: React.CSSProperties = {

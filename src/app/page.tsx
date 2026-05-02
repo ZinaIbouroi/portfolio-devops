@@ -308,7 +308,7 @@ export default function HomePage() {
               <span style={{ fontSize:22 }}>👶</span>
               <div>
                 <div style={{ fontWeight:800, fontSize:13, color:'#0F172A' }}>Sofia</div>
-                <div style={{ fontSize:11, color:'#BE185D' }}>2 ans · Ma priorité 💝</div>
+                <div style={{ fontSize:11, color:'#BE185D' }}>2 ans 💝</div>
               </div>
             </div>
           </div>
