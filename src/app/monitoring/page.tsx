@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-const API_URL = 'COLLE_TON_URL_ICI'
+const API_URL = 'https://8op29vrrne.execute-api.eu-west-3.amazonaws.com//metrics'
 
 interface Metric {
   value: number
