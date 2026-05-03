@@ -12,3 +12,8 @@ output "cloudfront_distribution_id" {
   description = "ID CloudFront pour le pipeline CI/CD"
   value       = aws_cloudfront_distribution.portfolio.id
 }
+
+output "api_monitoring_url" {
+  description = "URL de l'API monitoring"
+  value       = "${aws_apigatewayv2_stage.monitoring.invoke_url}/metrics"
+}
