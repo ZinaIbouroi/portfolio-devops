@@ -1,3 +1,11 @@
+# ──────────────────────────────────────────────────────
+# Author  : Ibouroi Zina Habiba
+# GitHub  : github.com/ZinaIbouroi
+# Project : Portfolio DevOps — Infrastructure as Code
+# Stack   : Terraform · AWS S3 · CloudFront · Lambda · CloudWatch · SNS
+# Date    : 2026
+# ──────────────────────────────────────────────────────
+
 terraform {
   required_providers {
     aws = {

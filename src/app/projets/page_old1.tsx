@@ -3,11 +3,10 @@ import { useEffect, useRef, useState } from 'react'
 import { ExternalLink, Github, CheckCircle } from 'lucide-react'
 import { projects, missionBNP } from '@/data/portfolio'
 import ArchitectureDiagram from '@/components/ArchitectureDiagram'
-import TaskManagerDiagram from '@/components/TaskManagerDiagram'
 
 const projectIcons: Record<string, string> = { terminal:'💻', globe:'🌐' }
 
-/* ── Pipeline animé général ── */
+/* ── Pipeline animé ── */
 const pipelineSteps = [
   { icon:'📝', label:'Code', sub:'Push Git', color:'#EFF6FF', border:'#BFDBFE', text:'#1d4ed8' },
   { icon:'🔍', label:'CI', sub:'Tests & Lint', color:'#FFF7ED', border:'#FED7AA', text:'#C2410C' },
@@ -63,11 +62,13 @@ function DevOpsPipeline() {
         </button>
       </div>
 
+      {/* Steps */}
       <div style={{ overflowX:'auto', overflowY:'visible', paddingBottom:4 }}>
         <div style={{ display:'flex', alignItems:'flex-start', gap:0, minWidth:500, padding:'10px 4px' }}>
           {pipelineSteps.map((s, i) => (
             <div key={i} style={{ display:'flex', alignItems:'center', flex:'1 1 0' }}>
               <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6, flex:1 }}>
+                {/* Cercle icône */}
                 <div style={{
                   width:54, height:54, borderRadius:'50%', flexShrink:0,
                   background: active >= i ? s.color : '#F8FAFC',
@@ -81,11 +82,13 @@ function DevOpsPipeline() {
                 }}>
                   {s.icon}
                 </div>
+                {/* Labels */}
                 <div style={{ textAlign:'center', minWidth:70 }}>
                   <div style={{ fontSize:11, fontWeight:700, color: active >= i ? s.text : '#94A3B8', transition:'color .3s' }}>{s.label}</div>
                   <div style={{ fontSize:10, color:'#94A3B8', lineHeight:1.3, marginTop:1 }}>{s.sub}</div>
                 </div>
               </div>
+              {/* Connecteur */}
               {i < pipelineSteps.length - 1 && (
                 <div style={{ flex:'0 0 24px', height:3, borderRadius:2, background:'#E2E8F0', position:'relative', overflow:'hidden', marginBottom:30, flexShrink:0 }}>
                   <div style={{ position:'absolute', inset:0, background:'#2563EB', width: active > i ? '100%' : '0%', transition:'width .4s ease' }}/>
@@ -96,6 +99,7 @@ function DevOpsPipeline() {
         </div>
       </div>
 
+      {/* Why */}
       <div style={{ marginTop:20, padding:'14px 18px', background:'#F8FAFC', borderRadius:12, border:'1px solid #E2E8F0' }}>
         <div style={{ fontSize:12, fontWeight:700, color:'#0F172A', marginBottom:6 }}>💡 Pourquoi ces projets ?</div>
         <p style={{ fontSize:13, color:'#475569', lineHeight:1.7 }}>
@@ -108,111 +112,37 @@ function DevOpsPipeline() {
   )
 }
 
-/* ── Carte projet avec architecture intégrée ── */
-function ProjectCard({ p, diagram }: { p: typeof projects[0]; diagram: React.ReactNode }) {
-  return (
-    <div style={{ background:'white', border:'1.5px solid #E2E8F0', borderRadius:16, overflow:'hidden', boxShadow:'0 2px 12px rgba(0,0,0,.04)' }}>
-      {/* En-tête colorée */}
-      <div style={{ background:p.color, padding:'20px 24px', display:'flex', alignItems:'center', gap:16 }}>
-        <div style={{ width:56, height:56, borderRadius:14, background:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, boxShadow:'0 4px 14px rgba(0,0,0,.07)', flexShrink:0 }}>
-          {projectIcons[p.icon]}
-        </div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:11, fontWeight:700, color:p.iconColor, textTransform:'uppercase', letterSpacing:'.04em', marginBottom:4 }}>{p.year}</div>
-          <h2 style={{ fontSize:18, fontWeight:800, color:'#0F172A', marginBottom:4 }}>{p.title}</h2>
-          <p style={{ fontSize:13, color:'#475569', lineHeight:1.5 }}>{p.description}</p>
-        </div>
-        {p.status === 'live' && (
-          <div style={{ display:'flex', alignItems:'center', gap:5, background:'#F0FDF4', border:'1px solid #BBF7D0', borderRadius:12, padding:'4px 12px', flexShrink:0 }}>
-            <span className="pulse-dot" style={{ width:6, height:6, borderRadius:'50%', background:'#10B981', display:'inline-block' }}/>
-            <span style={{ fontSize:11, fontWeight:700, color:'#15803D' }}>Live</span>
-          </div>
-        )}
-      </div>
-
-      {/* Architecture */}
-      <div style={{ padding:'24px 24px 0' }}>
-        {diagram}
-      </div>
-
-      {/* Description détaillée */}
-      <div style={{ padding:'24px' }}>
-        {/* Tags */}
-        <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:20 }}>
-          {p.tags.map((t, i) => <span key={t} className={`tag ${p.tagClasses[i]}`}>{t}</span>)}
-        </div>
-
-        {/* Points clés + Stack */}
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:20, marginBottom:20 }} className="project-detail-grid">
-          <div>
-            <div style={{ fontSize:11, fontWeight:700, color:'#64748B', textTransform:'uppercase', letterSpacing:'.05em', marginBottom:10 }}>Points clés</div>
-            {p.highlights.map(h => (
-              <div key={h} style={{ display:'flex', gap:8, marginBottom:6, alignItems:'flex-start' }}>
-                <CheckCircle size={12} style={{ color:'#2563EB', flexShrink:0, marginTop:1 }}/>
-                <span style={{ fontSize:12, color:'#475569', lineHeight:1.4 }}>{h}</span>
-              </div>
-            ))}
-          </div>
-          <div>
-            <div style={{ fontSize:11, fontWeight:700, color:'#64748B', textTransform:'uppercase', letterSpacing:'.05em', marginBottom:10 }}>Stack</div>
-            {Object.entries(p.stack).map(([cat, items]) => (
-              <div key={cat} style={{ marginBottom:6 }}>
-                <span style={{ fontSize:11, color:'#94A3B8', fontWeight:600 }}>{cat} : </span>
-                <span style={{ fontSize:12, color:'#0F172A' }}>{(items as string[]).join(', ')}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Liens */}
-        <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
-          <a href={p.links.github} target="_blank" rel="noopener noreferrer"
-            style={{ display:'flex', alignItems:'center', gap:6, background:'#F8FAFC', border:'1.5px solid #E2E8F0', borderRadius:8, padding:'8px 16px', fontSize:13, fontWeight:600, color:'#0F172A', transition:'all .2s' }}
-            onMouseOver={e => { e.currentTarget.style.borderColor='#2563EB'; e.currentTarget.style.color='#2563EB' }}
-            onMouseOut={e => { e.currentTarget.style.borderColor='#E2E8F0'; e.currentTarget.style.color='#0F172A' }}
-          >
-            <Github size={15}/> Code source
-          </a>
-          {p.links.demo && p.links.demo !== '#' && (
-            <a href={p.links.demo} target="_blank" rel="noopener noreferrer"
-              style={{ display:'flex', alignItems:'center', gap:6, background:'#2563EB', borderRadius:8, padding:'8px 16px', fontSize:13, fontWeight:600, color:'white', transition:'background .2s' }}
-              onMouseOver={e => e.currentTarget.style.background='#1d4ed8'}
-              onMouseOut={e => e.currentTarget.style.background='#2563EB'}
-            >
-              <ExternalLink size={15}/> Voir la démo
-            </a>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function ProjetsPage() {
   return (
     <div style={{ minHeight:'80vh' }}>
-      {/* Header */}
+      {/* ── Header immersif ── */}
       <div className='projets-header' style={{ background:'linear-gradient(135deg,#0F172A 0%,#1e3a5f 55%,#1d4ed8 100%)', padding:'52px 0 44px', position:'relative', overflow:'hidden' }}>
+        {/* Décos */}
         <div style={{ position:'absolute', top:-80, right:-80, width:320, height:320, background:'rgba(37,99,235,.12)', borderRadius:'50%', pointerEvents:'none' }}/>
         <div style={{ position:'absolute', bottom:-60, left:60, width:200, height:200, background:'rgba(16,185,129,.08)', borderRadius:'50%', pointerEvents:'none' }}/>
+
         <div className="container" style={{ position:'relative', zIndex:2 }}>
+          {/* Label */}
           <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(255,255,255,.08)', border:'1px solid rgba(255,255,255,.15)', borderRadius:20, padding:'4px 14px', marginBottom:18 }}>
             <span style={{ fontSize:12 }}>⚡</span>
-            <span style={{ fontSize:12, fontWeight:700, color:'#93C5FD' }}>Pratique DevOps · De l&apos;idée au déploiement</span>
+            <span style={{ fontSize:12, fontWeight:700, color:'#93C5FD' }}>Pratique DevOps · De l'idée au déploiement</span>
           </div>
+
           <h1 style={{ fontSize:'clamp(1.8rem,3.5vw,2.6rem)', fontWeight:900, color:'white', marginBottom:12, letterSpacing:'-0.02em', lineHeight:1.1 }}>
             Mes projets DevOps
           </h1>
           <p style={{ color:'#94A3B8', fontSize:15, lineHeight:1.7, maxWidth:520, marginBottom:28 }}>
             Deux projets concrets réalisés pour <strong style={{ color:'#CBD5E1' }}>démontrer et maintenir mes compétences</strong> pendant ma recherche : CI/CD, conteneurisation, infrastructure cloud — du code à la prod.
           </p>
-          <div style={{ display:'flex', gap:12, flexWrap:'wrap' }}>
+
+          {/* Stats rapides */}
+          <div className='projets-header-stats' style={{ display:'flex', gap:12, flexWrap:'wrap' }}>
             {[
               { icon:'🔄', label:'Pipelines CI/CD', val:'GitHub Actions' },
               { icon:'🐳', label:'Conteneurisation', val:'Docker + Docker Hub' },
               { icon:'☁️', label:'Cloud', val:'AWS · Render' },
               { icon:'✅', label:'En ligne', val:'Démos accessibles' },
-            ].map(s => (
+            ].map(s=>(
               <div key={s.label} style={{ background:'rgba(255,255,255,.07)', border:'1px solid rgba(255,255,255,.12)', borderRadius:10, padding:'10px 16px', backdropFilter:'blur(6px)' }}>
                 <div style={{ fontSize:18, marginBottom:3 }}>{s.icon}</div>
                 <div style={{ fontSize:11, color:'#64748B' }}>{s.label}</div>
@@ -230,19 +160,93 @@ export default function ProjetsPage() {
         </div>
       </section>
 
-      {/* Projets avec architecture intégrée */}
+      {/* Architecture DevOps */}
+      <section className="section" style={{ background:'white' }}>
+        <div className="container">
+          <div className="section-label">Infrastructure</div>
+          <h2 className="section-title" style={{ marginBottom:24 }}>Architecture complète du portfolio</h2>
+          <p style={{ color:'#64748B', fontSize:14, marginBottom:28, maxWidth:560 }}>
+            Ce portfolio est lui-même un projet DevOps — voici comment tout s&apos;articule de bout en bout.
+          </p>
+          <ArchitectureDiagram />
+        </div>
+      </section>
+
+      {/* Projects */}
       <section className="section" style={{ background:'white' }}>
         <div className="container">
           <div className="section-label">Réalisations</div>
           <h2 className="section-title" style={{ marginBottom:28 }}>Mes projets</h2>
-          <div style={{ display:'flex', flexDirection:'column', gap:32 }}>
-            <ProjectCard p={projects[0]} diagram={<TaskManagerDiagram />} />
-            <ProjectCard p={projects[1]} diagram={<ArchitectureDiagram />} />
+          <div style={{ display:'flex', flexDirection:'column', gap:24 }}>
+            {projects.map(p => (
+              <div key={p.id} className="card" style={{ padding:0, overflow:'hidden' }}>
+                <div style={{ display:'grid', gridTemplateColumns:'180px 1fr' }} className="project-card-grid">
+                  {/* Accent */}
+                  <div style={{ background:p.color, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:28, gap:10, minHeight:160 }}>
+                    <div style={{ width:60, height:60, borderRadius:16, background:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:30, boxShadow:'0 4px 14px rgba(0,0,0,.07)' }}>
+                      {projectIcons[p.icon]}
+                    </div>
+                    <div style={{ fontSize:11, fontWeight:700, color:p.iconColor, textAlign:'center', textTransform:'uppercase', letterSpacing:'.04em' }}>{p.year}</div>
+                    {p.status === 'live' && (
+                      <div style={{ display:'flex', alignItems:'center', gap:5, background:'#F0FDF4', border:'1px solid #BBF7D0', borderRadius:12, padding:'2px 10px' }}>
+                        <span className="pulse-dot" style={{ width:6, height:6, borderRadius:'50%', background:'#10B981', display:'inline-block' }}/>
+                        <span style={{ fontSize:11, fontWeight:700, color:'#15803D' }}>Live</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div style={{ padding:'22px 26px' }}>
+                    <h2 style={{ fontSize:17, fontWeight:800, color:'#0F172A', marginBottom:7 }}>{p.title}</h2>
+                    <p style={{ color:'#475569', fontSize:13, lineHeight:1.7, marginBottom:14 }}>{p.longDescription}</p>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:5, marginBottom:14 }}>
+                      {p.tags.map((t,i)=><span key={t} className={`tag ${p.tagClasses[i]}`}>{t}</span>)}
+                    </div>
+
+                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:18 }} className="project-detail-grid">
+                      <div>
+                        <div style={{ fontSize:11, fontWeight:700, color:'#64748B', textTransform:'uppercase', letterSpacing:'.05em', marginBottom:7 }}>Points clés</div>
+                        {p.highlights.map(h=>(
+                          <div key={h} style={{ display:'flex', gap:7, marginBottom:5, alignItems:'flex-start' }}>
+                            <CheckCircle size={12} style={{ color:'#2563EB', flexShrink:0, marginTop:1 }}/>
+                            <span style={{ fontSize:12, color:'#475569', lineHeight:1.4 }}>{h}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div>
+                        <div style={{ fontSize:11, fontWeight:700, color:'#64748B', textTransform:'uppercase', letterSpacing:'.05em', marginBottom:7 }}>Stack</div>
+                        {Object.entries(p.stack).map(([cat,items])=>(
+                          <div key={cat} style={{ marginBottom:5 }}>
+                            <span style={{ fontSize:11, color:'#94A3B8', fontWeight:600 }}>{cat} : </span>
+                            <span style={{ fontSize:12, color:'#0F172A' }}>{(items as string[]).join(', ')}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
+                      <a href={p.links.github} target="_blank" rel="noopener noreferrer"
+                        style={{ display:'flex', alignItems:'center', gap:6, background:'#F8FAFC', border:'1.5px solid #E2E8F0', borderRadius:8, padding:'7px 14px', fontSize:12, fontWeight:600, color:'#0F172A', transition:'all .2s' }}
+                        onMouseOver={e=>{e.currentTarget.style.borderColor='#2563EB';e.currentTarget.style.color='#2563EB'}}
+                        onMouseOut={e=>{e.currentTarget.style.borderColor='#E2E8F0';e.currentTarget.style.color='#0F172A'}}
+                      ><Github size={14}/> Code source</a>
+                      {p.links.demo && p.links.demo !== '#' && (
+                        <a href={p.links.demo} target="_blank" rel="noopener noreferrer"
+                          style={{ display:'flex', alignItems:'center', gap:6, background:'#2563EB', borderRadius:8, padding:'7px 14px', fontSize:12, fontWeight:600, color:'white', transition:'background .2s' }}
+                          onMouseOver={e=>e.currentTarget.style.background='#1d4ed8'}
+                          onMouseOut={e=>e.currentTarget.style.background='#2563EB'}
+                        ><ExternalLink size={14}/> Voir la démo</a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Mission BNP */}
+      {/* BNP */}
       <section className="section" style={{ background:'#F8FAFC' }}>
         <div className="container">
           <div className="section-label">Expérience professionnelle</div>
@@ -253,7 +257,7 @@ export default function ProjetsPage() {
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:20 }} className="two-col">
             <div className="card" style={{ padding:22 }}>
               <div style={{ fontSize:13, fontWeight:700, color:'#0F172A', marginBottom:14 }}>Réalisations</div>
-              {missionBNP.highlights.map(h => (
+              {missionBNP.highlights.map(h=>(
                 <div key={h} style={{ display:'flex', gap:10, marginBottom:10, alignItems:'flex-start' }}>
                   <CheckCircle size={14} style={{ color:'#2563EB', flexShrink:0, marginTop:1 }}/>
                   <span style={{ fontSize:13, color:'#475569', lineHeight:1.5 }}>{h}</span>
@@ -263,7 +267,7 @@ export default function ProjetsPage() {
             <div className="card" style={{ padding:22 }}>
               <div style={{ fontSize:13, fontWeight:700, color:'#0F172A', marginBottom:14 }}>Environnement technique</div>
               <div style={{ display:'flex', flexWrap:'wrap', gap:7 }}>
-                {missionBNP.env.map(t => (
+                {missionBNP.env.map(t=>(
                   <span key={t} style={{ background:'#EFF6FF', color:'#2563EB', border:'1px solid #BFDBFE', borderRadius:7, padding:'4px 12px', fontSize:12, fontWeight:600 }}>{t}</span>
                 ))}
               </div>
@@ -277,13 +281,19 @@ export default function ProjetsPage() {
       </section>
 
       <style>{`
-        .projets-header { padding: 52px 0 44px; }
+        .project-card-grid { grid-template-columns: 180px 1fr; }
         .project-detail-grid { grid-template-columns: 1fr 1fr; }
         .two-col { grid-template-columns: 1fr 1fr; }
         @media (max-width: 768px) {
-          .projets-header { padding: 28px 0 24px !important; }
+          .project-card-grid { grid-template-columns: 1fr !important; }
           .project-detail-grid { grid-template-columns: 1fr !important; }
           .two-col { grid-template-columns: 1fr !important; }
+          /* Header compact mobile */
+          .projets-header { padding: 28px 0 24px !important; }
+          .projets-header h1 { font-size: 1.4rem !important; margin-bottom: 8px !important; }
+          .projets-header p { font-size: 13px !important; margin-bottom: 16px !important; }
+          .projets-header-stats { gap: 8px !important; }
+          .projets-header-stats > div { padding: 8px 10px !important; }
         }
       `}</style>
     </div>
