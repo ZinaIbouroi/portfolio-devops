@@ -171,7 +171,7 @@ export const projects = [
       "Monitoring": ["CloudWatch"],
     },
     links: {
-      github: "https://github.com/ZinaIbouroi/portfolio",
+      github: "https://github.com/ZinaIbouroi/portfolio-devops",
       demo: "#",
     },
   },
