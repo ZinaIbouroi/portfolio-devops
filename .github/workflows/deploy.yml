@@ -1,3 +1,12 @@
+# ──────────────────────────────────────────────────────
+# Author  : Ibouroi Zina Habiba
+# GitHub  : github.com/ZinaIbouroi
+# Project : Portfolio DevOps — CI/CD Pipeline
+# Stack   : GitHub Actions · AWS S3 · CloudFront
+# Date    : 2026
+# ──────────────────────────────────────────────────────
+
+
 name: Deploy Portfolio
 
 on:
