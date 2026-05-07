@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import type {} from './globals.css'
+import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ClientOnly from '@/components/ClientOnly'
