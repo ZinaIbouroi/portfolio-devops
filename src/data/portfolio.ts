@@ -110,8 +110,9 @@ export const certifications = [
   { name: "Scaled Agile Framework (SAFe)", org: "LinkedIn Learning", year: "Obtenue", done: true },
   { name: "Terraform", org: "LinkedIn Learning", year: "Obtenue", done: true },
   { name: "Python", org: "LinkedIn Learning", year: "Obtenue", done: true },
-  { name: "AWS Cloud Practitioner", org: "Formation Global Knowledge — Certif en cours", year: "En cours", done: false },
-  { name: "Kubernetes", org: "LinkedIn Learning", year: "En cours", done: false },
+  { name: "AWS Cloud Practitioner", org: "Amazon Web Services", year: "Obtenue", done: true },
+  { name: "AZ-900 Microsoft Azure", org: "Microsoft", year: "Obtenue", done: true },
+  { name: "Kubernetes", org: "LinkedIn Learning", year: "Obtenue", done: true },
 ]
 
 export const projects = [
