@@ -32,6 +32,9 @@ const pauseItems = [
   { icon:'🔍', date:'Janv. 2026', title:"Recherche d'emploi", desc:'Recherches actives + remise à niveau : AWS, Kubernetes', color:'#EFF6FF', border:'#BFDBFE', text:'#1D4ED8' },
   { icon:'💻', date:'2026', title:'Task Manager', desc:'CI/CD, Docker, déploiement cloud', color:'#F0FDF4', border:'#BBF7D0', text:'#15803D' },
   { icon:'🌐', date:'2026', title:'Ce portfolio', desc:'Terraform, AWS, GitHub Actions', color:'#F0FDF4', border:'#BBF7D0', text:'#15803D' },
+  { icon:'☁️', date:'Oct. 2026', title:'Certification AWS', desc:'AWS Cloud Practitioner — obtenue ✅', color:'#FFF7ED', border:'#FED7AA', text:'#C2410C' },
+  { icon:'🔷', date:'2026', title:'Certification AZ-900', desc:'Microsoft Azure Fundamentals — obtenue ✅', color:'#EFF6FF', border:'#BFDBFE', text:'#1D4ED8' },
+  { icon:'☸️', date:'2026', title:'Certification Kubernetes', desc:'Kubernetes — obtenue ✅', color:'#EFF6FF', border:'#BFDBFE', text:'#1D4ED8' },
 ]
 
 function PauseTimeline() {
@@ -156,7 +159,7 @@ export default function HomePage() {
           {[
             { sub:'Expérience', val:'3 ans · DevOps', border:'#BFDBFE', valColor:'#0F172A', delay:'0s' },
             { sub:'Mission', val:'BNP Paribas ✓', border:'#BBF7D0', valColor:'#10B981', delay:'.5s' },
-            { sub:'Certifiée', val:'SAFe ✓', border:'#DDD6FE', valColor:'#7C3AED', delay:'1s' },
+            { sub:'Certifiée', val:'AWS · AZ-900 · K8s ✓', border:'#DDD6FE', valColor:'#7C3AED', delay:'1s' },
           ].map(b=>(
             <div key={b.val} className="float" style={{ background:'rgba(255,255,255,.93)', backdropFilter:'blur(8px)', border:`1.5px solid ${b.border}`, borderRadius:12, padding:'9px 14px', boxShadow:'0 4px 16px rgba(0,0,0,.07)', animationDelay:b.delay }}>
               <div style={{ fontSize:10, color:'#64748B', fontWeight:600 }}>{b.sub}</div>
@@ -222,7 +225,7 @@ export default function HomePage() {
                 {[
                   { n:'3 ans', l:"Expérience DevOps", c:'#EFF6FF', b:'#BFDBFE', t:'#1d4ed8' },
                   { n:'BNP', l:'Env. bancaire', c:'#F0FDF4', b:'#BBF7D0', t:'#15803D' },
-                  { n:'SAFe', l:'Certifiée', c:'#F5F3FF', b:'#DDD6FE', t:'#6D28D9' },
+                  { n:'6 Certifs', l:'AWS · AZ-900 · K8s…', c:'#F5F3FF', b:'#DDD6FE', t:'#6D28D9' },
                   { n:'Dispo', l:'Immédiatement', c:'#FFF7ED', b:'#FED7AA', t:'#C2410C' },
                 ].map(s=>(
                   <div key={s.n} style={{ background:s.c, border:`1.5px solid ${s.b}`, borderRadius:10, padding:'10px 12px' }}>
